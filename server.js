@@ -104,7 +104,10 @@ const server = http.createServer(async (req, res) => {
     const body = await readBody(req);
     res.writeHead(200); res.end("OK"); // acknowledge fast, reply after
     try {
+      console.log("Webhook POST received:", JSON.stringify(body).slice(0, 1000));
       const msg = body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
+      if (msg) console.log("Incoming message from", msg.from, "type", msg.type, "text", msg.text?.body);
+      else console.log("Webhook POST had no text message in payload");
       if (msg && msg.type === "text") {
         await sendText(msg.from, pickReply(msg.text?.body || ""));
       }
