@@ -14,6 +14,10 @@ const TOKEN = process.env.WHATSAPP_TOKEN || "PASTE_YOUR_ACCESS_TOKEN_HERE";
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID || "PASTE_YOUR_PHONE_NUMBER_ID_HERE";
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN || "PASTE_ANY_SECRET_WORD_HERE";
 const PORT = process.env.PORT || 3000;
+const UNKNOWN_MSG =
+  "Maaf kijiye, hum aapka message samajh nahi sake.\n" +
+  "Barae meharbani neeche diye gaye menu mein se koi number select karein, " +
+  `ya hum se is number par rabta karein: ${SALES_NUMBER}`;
 
 // ---------- CONTENT (edit texts here only) ----------
 
@@ -130,8 +134,9 @@ async function handleMessage(from, text) {
       session.state = "project";
       session.project = Number(input) - 1;
       await send(from, projectMenuText());
-    } else {
-      await send(from, mainMenuText()); // invalid input -> show menu again
+       } else {
+      await send(from, UNKNOWN_MSG);
+      await send(from, mainMenuText());
     }
     return;
   }
@@ -152,8 +157,9 @@ async function handleMessage(from, text) {
     session.state = "main";
     session.project = null;
     await send(from, mainMenuText());
-  } else {
-    await send(from, projectMenuText()); // invalid input -> show menu again
+   } else {
+    await send(from, UNKNOWN_MSG);
+    await send(from, projectMenuText());
   }
 }
 
