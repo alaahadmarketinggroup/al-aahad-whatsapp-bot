@@ -26,7 +26,7 @@ const WELCOME =
   "Hum aapko aapke budget aur zarooriyat ke mutabiq behtareen property dhoondhne mein madad karte hain.";
 
 const MAIN_MENU_INTRO =
-  "Mazeed Maloomat Hasil Karne Ke Liye Neeche Diye Gaye Options Mein Se Kisi Ek Ka Number Reply Karein.";
+  "Mazeed Maloomat Hasil Karne Ke Liye Neeche Diye Gaye Options Mein Se Kisi Ek Number Sa Reply Karein.";
 
 const WEBSITE = "https://alaahadmarketinggroup.com/";
 const SALES_NUMBER = "03022285787";
