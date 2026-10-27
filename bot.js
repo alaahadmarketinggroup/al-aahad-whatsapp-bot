@@ -21,7 +21,7 @@ const OWNER_NUMBER = process.env.OWNER_NUMBER || "";
 // ---------- CONTENT (edit texts here only) ----------
 
 const WELCOME =
-  "123Assalam-o-Alaikum!\n" +
+  "Assalam-o-Alaikum!\n" +
   "Al-Aahad Marketing Group se rabta karne ka shukriya!\n" +
   "Hum aapko aapke budget aur zarooriyat ke mutabiq behtareen property dhoondhne mein madad karte hain.";
 
