@@ -34,12 +34,12 @@ const PROJECTS = [
     name: "Bolan Hills",
     location: "the location is https://maps.app.goo.gl/4trB3X3377pbHcUX8",
     price:
-       "5 year plan (60 months)\n" +
-  "The price is 3,500,000 for 80 square yds\n" +
-  "monthly installments 20,000\n" +
-  "The price is 4,500,000 for 120 square yds\n" +
-  "monthly installments 30,000",
-    verified: "the project is verified by SBCA\nthe project is leased by LDA",
+       "5 Year Plan (60 months)\n\n" +
+  "The Price is 3,500,000 for 80 square yds\n" +
+  "Monthly Installments 20,000\n\n" +
+  "The Price is 4,500,000 for 120 square yds\n" +
+  "Monthly Installments 30,000",
+    Verified: "The project is verified by SBCA\nthe project is leased by LDA",
   },
   {
     name: "Titanium",
