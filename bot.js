@@ -46,7 +46,9 @@ const PROJECTS = [
     location: "the location is https://maps.app.goo.gl/S3UHn7Xh8MVQ3st86",
     price:
       "The price is 4,495,000 for 80 square yds\n" +
+      "Monthly Installments 20,000\n\n" +
       "The price is 5,795,000 for 120 square yds",
+     "Monthly Installments 30,000",
     verified: "the project is verified by SBCA\nthe project is leased by LDA",
   },
   {
