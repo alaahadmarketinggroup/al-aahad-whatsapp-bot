@@ -14,10 +14,6 @@ const TOKEN = process.env.WHATSAPP_TOKEN || "PASTE_YOUR_ACCESS_TOKEN_HERE";
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID || "PASTE_YOUR_PHONE_NUMBER_ID_HERE";
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN || "PASTE_ANY_SECRET_WORD_HERE";
 const PORT = process.env.PORT || 3000;
-const UNKNOWN_MSG =
-  "Maaf kijiye, hum aapka message samajh nahi sake.\n" +
-  "Barae meharbani neeche diye gaye menu mein se koi number select karein, " +
-  `ya hum se is number par rabta karein: ${SALES_NUMBER}`;
 
 // ---------- CONTENT (edit texts here only) ----------
 
@@ -32,18 +28,24 @@ const MAIN_MENU_INTRO =
 const WEBSITE = "https://alaahadmarketinggroup.com/";
 const SALES_NUMBER = "03022285787";
 
+// Must stay BELOW the SALES_NUMBER line, because it uses it
+const UNKNOWN_MSG =
+  "Maaf kijiye, hum aapka message samajh nahi sake.\n" +
+  "Barae meharbani neeche diye gaye menu mein se koi number select karein, " +
+  `ya hum se is number par rabta karein: ${SALES_NUMBER}`;
+
 // To add a new project, add one object here. Menu numbers update automatically.
 const PROJECTS = [
   {
     name: "Bolan Hills",
     location: "the location is https://maps.app.goo.gl/4trB3X3377pbHcUX8",
     price:
-       "5 Year Plan (60 months)\n\n" +
-  "The Price is 3,500,000 for 80 square yds\n" +
-  "Monthly Installments 20,000\n\n" +
-  "The Price is 4,500,000 for 120 square yds\n" +
-  "Monthly Installments 30,000",
-    Verified: "The project is verified by SBCA\nthe project is leased by LDA",
+      "5 Year Plan (60 months)\n\n" +
+      "The Price is 3,500,000 for 80 square yds\n" +
+      "Monthly Installments 20,000\n\n" +
+      "The Price is 4,500,000 for 120 square yds\n" +
+      "Monthly Installments 30,000",
+    verified: "The project is verified by SBCA\nthe project is leased by LDA",
   },
   {
     name: "Titanium",
@@ -51,8 +53,8 @@ const PROJECTS = [
     price:
       "The price is 4,495,000 for 80 square yds\n" +
       "Monthly Installments 20,000\n\n" +
-      "The price is 5,795,000 for 120 square yds",
-     "Monthly Installments 30,000",
+      "The price is 5,795,000 for 120 square yds\n" +
+      "Monthly Installments 30,000",
     verified: "the project is verified by SBCA\nthe project is leased by LDA",
   },
   {
@@ -134,7 +136,7 @@ async function handleMessage(from, text) {
       session.state = "project";
       session.project = Number(input) - 1;
       await send(from, projectMenuText());
-       } else {
+    } else {
       await send(from, UNKNOWN_MSG);
       await send(from, mainMenuText());
     }
@@ -157,7 +159,7 @@ async function handleMessage(from, text) {
     session.state = "main";
     session.project = null;
     await send(from, mainMenuText());
-   } else {
+  } else {
     await send(from, UNKNOWN_MSG);
     await send(from, projectMenuText());
   }
