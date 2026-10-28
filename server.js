@@ -84,12 +84,12 @@ function projectIndexFromKey(n) {
   return -1;
 }
 
-// Ready-to-move projects. To add one, add another line.
-const READY_PROJECTS = [
-  { name: "Project A", details: "Project A is ready to move. Contact 0302-2285787 for details." },
-  { name: "Project B", details: "Project B is ready to move. Contact 0302-2285787 for details." },
-  { name: "Project C", details: "Project C is ready to move. Contact 0302-2285787 for details." },
-];
+// Message sent when a customer presses 5. Edit the text anytime.
+// Use \n for a new line and \n\n for a blank line.
+const READY_TEXT =
+  "Ready-to-Move Projects\n\n" +
+  "Write your details here.\n" +
+  "Another line here.";
 
 // ---------- MENUS ----------
 
@@ -100,12 +100,6 @@ function mainMenuText() {
   const lines = items.map(([k, label]) => `[${k}] ${label}`);
   lines.push("[0] Sales Representative Se Baat Karein.");
   return `${MAIN_MENU_INTRO}\n\n${lines.join("\n")}`;
-}
-
-function readyMenuText() {
-  const lines = READY_PROJECTS.map((p, i) => `[${i + 1}] ${p.name}`);
-  lines.push("[0] Main Menu");
-  return `🏠 READY-TO-MOVE PROJECTS\n\n${lines.join("\n")}`;
 }
 
 function projectMenuText() {
@@ -177,8 +171,8 @@ async function handleMessage(from, text, name) {
     } else if (key === WEBSITE_KEY) {
       await send(from, WEBSITE);
     } else if (key === READY_KEY) {
-      session.state = "ready";
-      await send(from, readyMenuText());
+          } else if (key === READY_KEY) {
+      await send(from, READY_TEXT);
     } else if (PROJECTS[projectIndex]) {
       session.state = "project";
       session.project = projectIndex;
@@ -186,23 +180,6 @@ async function handleMessage(from, text, name) {
     } else {
       await send(from, UNKNOWN_MSG);
       await send(from, mainMenuText());
-    }
-    return;
-  }
-
-  // ----- Ready-to-Move list -----
-  if (session.state === "ready") {
-    const idx = /^\d+$/.test(input) ? Number(input) - 1 : -1;
-
-    if (input === "0") {
-      session.state = "main";
-      await send(from, mainMenuText());
-    } else if (READY_PROJECTS[idx]) {
-      await send(from, READY_PROJECTS[idx].details);
-      await send(from, readyMenuText());
-    } else {
-      await send(from, UNKNOWN_MSG);
-      await send(from, readyMenuText());
     }
     return;
   }
