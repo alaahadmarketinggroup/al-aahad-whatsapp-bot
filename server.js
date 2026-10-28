@@ -134,7 +134,12 @@ function logToSheet(number, from, message) {
       from, // "Customer" or "Bot"
       message: String(message).slice(0, 500),
     }),
-  }).catch((e) => console.error("Sheet log failed:", e.message));
+  })
+    .then(async (r) => {
+      const t = (await r.text()).trim();
+      if (t !== "ok") console.error("Sheet reply:", r.status, t.slice(0, 120));
+    })
+    .catch((e) => console.error("Sheet log failed:", e.message));
 }
 
 // ---------- SENDING ----------
@@ -291,3 +296,23 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => console.log(`Bot running on port ${PORT}`));
+
+// Startup check: adds one "Bot started" row to the sheet and prints the result in the logs
+if (!SHEET_URL) {
+  console.log("Sheet logging is OFF: SHEET_URL is empty");
+} else {
+  fetch(SHEET_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify({
+      secret: SHEET_SECRET,
+      time: new Date().toISOString(),
+      name: "Startup test",
+      number: "0",
+      from: "Bot",
+      message: "Bot started",
+    }),
+  })
+    .then(async (r) => console.log("Sheet test:", r.status, (await r.text()).trim().slice(0, 120)))
+    .catch((e) => console.error("Sheet test failed:", e.message));
+}
