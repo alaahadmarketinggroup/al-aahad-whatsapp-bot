@@ -145,6 +145,11 @@ async function notifyOwner(text) {
 
 // ---------- BOT LOGIC ----------
 
+// Writes a searchable lead line to the Render Logs. In Render > Logs, type LEAD in the search box.
+function logLead(reason, name, from) {
+  console.log(`LEAD | ${reason} | ${name} (+${from}) | https://wa.me/${from}`);
+}
+
 async function handleMessage(from, text, name) {
   const input = text.trim();
   const session = sessions.get(from);
@@ -155,6 +160,7 @@ async function handleMessage(from, text, name) {
     await send(from, WELCOME);
     await send(from, mainMenuText());
     if (from !== OWNER_NUMBER) {
+      logLead("NEW CHAT", name, from);
       await notifyOwner(`New chat: ${name} (+${from})\nhttps://wa.me/${from}`);
     }
     return;
@@ -169,11 +175,13 @@ async function handleMessage(from, text, name) {
     if (input === "0") {
       await send(from, SALES_NUMBER);
       if (from !== OWNER_NUMBER) {
+        logLead("WANTS SALES REP", name, from);
         await notifyOwner(`Wants a sales representative: ${name} (+${from})\nhttps://wa.me/${from}`);
       }
     } else if (key === WEBSITE_KEY) {
       await send(from, WEBSITE);
     } else if (key === READY_KEY) {
+      logLead("VIEWED READY-TO-MOVE", name, from);
       await send(from, READY_TEXT);
       await send(from, mainMenuText());
     } else if (PROJECTS[projectIndex]) {
@@ -194,6 +202,7 @@ async function handleMessage(from, text, name) {
     await send(from, project.location);
     await send(from, projectMenuText());
   } else if (input === "2") {
+    logLead(`VIEWED PRICE - ${project.name}`, name, from);
     await send(from, project.price);
     await send(from, projectMenuText());
   } else if (input === "3") {
