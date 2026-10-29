@@ -87,9 +87,11 @@ function projectIndexFromKey(n) {
 // Message sent when a customer presses 5. Edit the text anytime.
 // Use \n for a new line and \n\n for a blank line.
 const READY_TEXT =
-  "[1] Times Residency\n\n[2] North Town Recidency Phase 1\n\n[3] Saima Arabian Villas " +
-  "\n\nReady-to-Move Projects ki maloomat ke liye humari sales team se 0302-2285787 par rabta karein.";
-
+  "Ready-to-Move Projects:\n\n" +
+  "• Times Residency\n" +
+  "• North Town Residency Phase 1\n" +
+  "• Saima Arabian Villas\n\n" +
+  "Ready-to-Move Projects ki maloomat ke liye humari sales team se 0302-2285787 par rabta karein.";
 // ---------- MENUS ----------
 
 function mainMenuText() {
