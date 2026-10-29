@@ -86,14 +86,13 @@ function projectIndexFromKey(n) {
 
 // Message sent when a customer presses 5. Edit the text anytime.
 // Use \n for a new line and \n\n for a blank line.
-// Keep "[1] Main Menu" at the end: pressing 1 (or 0) here goes back to the main menu.
+// The main menu is sent automatically right after this message.
 const READY_TEXT =
   "Ready-to-Move Projects:\n\n" +
   "• Times Residency\n" +
   "• North Town Residency Phase 1\n" +
   "• Saima Arabian Villas\n\n" +
-  "Ready-to-Move Projects ki maloomat ke liye humari sales team se 0302-2285787 par rabta karein.\n\n" +
-  "[1] Main Menu";
+  "Ready-to-Move Projects ki maloomat ke liye humari sales team se 0302-2285787 par rabta karein.";
 
 // ---------- MENUS ----------
 
@@ -112,7 +111,7 @@ function projectMenuText() {
 
 // ---------- SESSIONS (in memory) ----------
 
-const sessions = new Map(); // phone -> { state: "main" | "project" | "ready", project, lastSeen }
+const sessions = new Map(); // phone -> { state: "main" | "project", project, lastSeen }
 const SESSION_TIMEOUT = 24 * 60 * 60 * 1000; // after 24h of silence, welcome again
 const seenMessages = new Set(); // avoid handling WhatsApp webhook retries twice
 
@@ -175,8 +174,8 @@ async function handleMessage(from, text, name) {
     } else if (key === WEBSITE_KEY) {
       await send(from, WEBSITE);
     } else if (key === READY_KEY) {
-      session.state = "ready";
       await send(from, READY_TEXT);
+      await send(from, mainMenuText());
     } else if (PROJECTS[projectIndex]) {
       session.state = "project";
       session.project = projectIndex;
@@ -184,18 +183,6 @@ async function handleMessage(from, text, name) {
     } else {
       await send(from, UNKNOWN_MSG);
       await send(from, mainMenuText());
-    }
-    return;
-  }
-
-  // ----- Ready-to-Move screen -----
-  if (session.state === "ready") {
-    if (input === "1" || input === "0") {
-      session.state = "main";
-      await send(from, mainMenuText());
-    } else {
-      await send(from, UNKNOWN_MSG);
-      await send(from, READY_TEXT);
     }
     return;
   }
