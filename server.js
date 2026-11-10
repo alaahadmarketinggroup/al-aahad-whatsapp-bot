@@ -37,18 +37,65 @@ const UNKNOWN_MSG =
   "Barae meharbani neeche diye gaye menu mein se koi number select karein, " +
   `ya hum se is number par rabta karein: ${SALES_NUMBER}`;
 
-// To add a new project, add one object here. Menu numbers update automatically.
+// Line added at the end of the North Town Phase 2 prices
+const DISCOUNT_LINE =
+  "Contact our Sales Representative for exclusive discount: 0302-2285787";
+
+// Builds a price message:  title, then one line per plot size, then the discount line
+function planText(title, lines) {
+  return `${title}\n\n${lines.join("\n")}\n\n${DISCOUNT_LINE}`;
+}
+
+// ---------- PROJECTS ----------
+//
+// Menu numbers 1 to 7 are given to the projects below, in order (first = [1], second = [2] ...).
+// [8] is Ready-to-Move and [9] is Website, so keep this list to 7 projects at most.
+//
+// There are two kinds of entries:
+//  A) a normal project  -> has location, price, verified
+//  B) a group of projects (like North Town Phase 2) -> has ONE shared location and verified,
+//     and a "projects" list where each project only has its own name and price.
+//
+// To add a normal project, paste another { name, location, price, verified } block.
+// To add a project inside North Town Phase 2, paste another { name, price } block in its list.
+
 const PROJECTS = [
   {
-    name: "Bolan Hills",
-    location: "the location is https://maps.app.goo.gl/4trB3X3377pbHcUX8",
-    price:
-      "5 Year Plan (60 months)\n\n" +
-      "The Price is 3,500,000 for 80 square yds\n" +
-      "Monthly Installments 20,000\n\n" +
-      "The Price is 4,500,000 for 120 square yds\n" +
-      "Monthly Installments 30,000",
-    verified: "The project is verified by SBCA\nthe project is leased by LDA",
+    name: "North Town Phase 2",
+    // Shared by ALL projects in this group. Replace the two texts below when you have them.
+    location:
+      "Location details coming soon. Please contact our sales team: 0302-2285787",
+    verified:
+      "Verification details coming soon. Please contact our sales team: 0302-2285787",
+    projects: [
+      {
+        name: "Bolan",
+        price: planText("Bohan - 5 Year Payment Plan", [
+          "80 sq yds: 3,500,000",
+          "120 sq yds: 4,500,000",
+        ]),
+      },
+      {
+        name: "Bolan Hills",
+        price: planText("Bolan Hills - 5 Year Payment Plan", [
+          "80 sq yds: 3,500,000",
+          "120 sq yds: 4,500,000",
+        ]),
+      },
+      {
+        name: "Bab-E-Aman Residency",
+        price: planText("Bab-E-Aman Residency - 5 Year Payment Plan", [
+          "80 sq yds: 3,500,000",
+          "120 sq yds: 4,500,000",
+        ]),
+      },
+      {
+        name: "Executive Bolan Corner",
+        price: planText("Executive Bolan Corner - 5 Year Payment Plan", [
+          "100 sq yds: 3,500,000",
+        ]),
+      },
+    ],
   },
   {
     name: "Titanium",
@@ -60,31 +107,26 @@ const PROJECTS = [
       "Monthly Installments 30,000",
     verified: "the project is verified by SBCA\nthe project is leased by LDA",
   },
-  {
-    name: "Times residency",
-    location: "the location is https://maps.app.goo.gl/hheUFtUKVdoBivGx6",
-    price:
-      "The price is 4,200,000 for 1 bed lounge\n" +
-      "The price is 6,200,000 for 2 bed lounge\n" +
-      "The price is 7,500,000 for 2 bed dd",
-    verified: "the project is leased by KDA",
-  },
 ];
 
-// Fixed menu numbers. Normal projects use 1-3, then skip 4 and 5 (so a 4th project is [6]).
-const WEBSITE_KEY = 4;
-const READY_KEY = 5;
+// Fixed menu numbers for the two special options
+const READY_KEY = 8;
+const WEBSITE_KEY = 9;
+const MAX_PROJECTS = 7;
+
+if (PROJECTS.length > MAX_PROJECTS) {
+  console.error(`WARNING: only ${MAX_PROJECTS} projects fit in the menu (1-7). Extra projects are ignored.`);
+}
 
 function projectKey(i) {
-  return i < 3 ? i + 1 : i + 3;
+  return i + 1;
 }
 function projectIndexFromKey(n) {
-  if (n >= 1 && n <= 3) return n - 1;
-  if (n >= 6) return n - 3;
+  if (n >= 1 && n <= MAX_PROJECTS) return n - 1;
   return -1;
 }
 
-// Message sent when a customer presses 5. Edit the text anytime.
+// Message sent when a customer presses 8. Edit the text anytime.
 // Use \n for a new line and \n\n for a blank line.
 // The main menu is sent automatically right after this message.
 const READY_TEXT =
@@ -97,21 +139,30 @@ const READY_TEXT =
 // ---------- MENUS ----------
 
 function mainMenuText() {
-  const items = PROJECTS.map((p, i) => [projectKey(i), p.name]);
-  items.push([WEBSITE_KEY, "Website"], [READY_KEY, "Ready-to-Move Projects"]);
+  const items = PROJECTS.slice(0, MAX_PROJECTS).map((p, i) => [projectKey(i), p.name]);
+  items.push([READY_KEY, "Ready-to-Move Projects"], [WEBSITE_KEY, "Website"]);
   items.sort((a, b) => a[0] - b[0]);
   const lines = items.map(([k, label]) => `[${k}] ${label}`);
   lines.push("[0] Sales Representative Se Baat Karein.");
   return `${MAIN_MENU_INTRO}\n\n${lines.join("\n")}`;
 }
 
-function projectMenuText() {
-  return "[1] Location\n[2] Price\n[3] Verified By\n[0] Main Menu";
+// List of projects inside a group (for example North Town Phase 2)
+function groupMenuText(group) {
+  const lines = group.projects.map((p, i) => `[${i + 1}] ${p.name}`);
+  lines.push("[0] Main Menu");
+  return lines.join("\n");
+}
+
+// Location / Price / Verified By menu. For a project inside a group, [0] goes back to the list.
+function projectMenuText(insideGroup) {
+  return `[1] Location\n[2] Price\n[3] Verified By\n[0] ${insideGroup ? "Back" : "Main Menu"}`;
 }
 
 // ---------- SESSIONS (in memory) ----------
 
-const sessions = new Map(); // phone -> { state: "main" | "project", project, lastSeen }
+// phone -> { state: "main" | "group" | "project" | "subproject", project, sub, lastSeen }
+const sessions = new Map();
 const SESSION_TIMEOUT = 24 * 60 * 60 * 1000; // after 24h of silence, welcome again
 const seenMessages = new Set(); // avoid handling WhatsApp webhook retries twice
 
@@ -156,7 +207,7 @@ async function handleMessage(from, text, name) {
 
   // First message (or returning after a long break)
   if (!session || Date.now() - session.lastSeen > SESSION_TIMEOUT) {
-    sessions.set(from, { state: "main", project: null, lastSeen: Date.now() });
+    sessions.set(from, { state: "main", project: null, sub: null, lastSeen: Date.now() });
     await send(from, WELCOME);
     await send(from, mainMenuText());
     if (from !== OWNER_NUMBER) {
@@ -185,9 +236,16 @@ async function handleMessage(from, text, name) {
       await send(from, READY_TEXT);
       await send(from, mainMenuText());
     } else if (PROJECTS[projectIndex]) {
-      session.state = "project";
+      const chosen = PROJECTS[projectIndex];
       session.project = projectIndex;
-      await send(from, projectMenuText());
+      session.sub = null;
+      if (chosen.projects) {
+        session.state = "group";
+        await send(from, groupMenuText(chosen));
+      } else {
+        session.state = "project";
+        await send(from, projectMenuText(false));
+      }
     } else {
       await send(from, UNKNOWN_MSG);
       await send(from, mainMenuText());
@@ -195,26 +253,57 @@ async function handleMessage(from, text, name) {
     return;
   }
 
-  // ----- Project menu -----
-  const project = PROJECTS[session.project];
+  // ----- List of projects inside a group (North Town Phase 2) -----
+  if (session.state === "group") {
+    const group = PROJECTS[session.project];
+    const n = /^\d+$/.test(input) ? Number(input) : -1;
+
+    if (input === "0") {
+      session.state = "main";
+      session.project = null;
+      await send(from, mainMenuText());
+    } else if (n >= 1 && group.projects[n - 1]) {
+      session.sub = n - 1;
+      session.state = "subproject";
+      await send(from, projectMenuText(true));
+    } else {
+      await send(from, UNKNOWN_MSG);
+      await send(from, groupMenuText(group));
+    }
+    return;
+  }
+
+  // ----- Location / Price / Verified By (normal project or project inside a group) -----
+  const inGroup = session.state === "subproject";
+  const parent = PROJECTS[session.project];
+  const item = inGroup ? parent.projects[session.sub] : parent;
+  const location = inGroup ? parent.location : item.location;
+  const verified = inGroup ? parent.verified : item.verified;
+  const logName = inGroup ? `${parent.name} / ${item.name}` : item.name;
 
   if (input === "1") {
-    await send(from, project.location);
-    await send(from, projectMenuText());
+    await send(from, location);
+    await send(from, projectMenuText(inGroup));
   } else if (input === "2") {
-    logLead(`VIEWED PRICE - ${project.name}`, name, from);
-    await send(from, project.price);
-    await send(from, projectMenuText());
+    logLead(`VIEWED PRICE - ${logName}`, name, from);
+    await send(from, item.price);
+    await send(from, projectMenuText(inGroup));
   } else if (input === "3") {
-    await send(from, project.verified);
-    await send(from, projectMenuText());
+    await send(from, verified);
+    await send(from, projectMenuText(inGroup));
   } else if (input === "0") {
-    session.state = "main";
-    session.project = null;
-    await send(from, mainMenuText());
+    if (inGroup) {
+      session.state = "group";
+      session.sub = null;
+      await send(from, groupMenuText(parent));
+    } else {
+      session.state = "main";
+      session.project = null;
+      await send(from, mainMenuText());
+    }
   } else {
     await send(from, UNKNOWN_MSG);
-    await send(from, projectMenuText());
+    await send(from, projectMenuText(inGroup));
   }
 }
 
