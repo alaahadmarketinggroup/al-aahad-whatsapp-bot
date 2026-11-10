@@ -107,7 +107,7 @@ const PROJECTS = [
       "Monthly Installments 30,000",
     verified: "the project is verified by SBCA\nthe project is leased by LDA",
   },
-    {
+  {
     name: "Al Ghafoor Sky Rise",
     location: "the location is https://maps.app.goo.gl/1BY53ScvHYLxLzP8A",
     price:
@@ -134,15 +134,18 @@ function projectIndexFromKey(n) {
   return -1;
 }
 
-// Message sent when a customer presses 8. Edit the text anytime.
-// Use \n for a new line and \n\n for a blank line.
-// The main menu is sent automatically right after this message.
-const READY_TEXT =
-  "Ready-to-Move Projects:\n\n" +
-  "• Times Residency - https://maps.app.goo.gl/eErUbaND2B6XHqn58\n\n" +
-  "• North Town Residency Phase 1 - https://maps.app.goo.gl/gW9ERYpeG53p9ukj9\n\n" +
-  "• Saima Arabian Villas - https://maps.app.goo.gl/qhecbiK1WcLBsuVC8\n\n" +
-  "• Naya Nazimabad - https://maps.app.goo.gl/vwcgHWESvazHmNHp6\n\n" +
+// Ready-to-Move Projects (menu option [8]). The customer sees a numbered list,
+// picks a number, and gets that project's location.
+// To add one, paste another { name, location } line. Numbers update automatically.
+const READY_PROJECTS = [
+  { name: "Times Residency", location: "https://maps.app.goo.gl/eErUbaND2B6XHqn58" },
+  { name: "North Town Residency Phase 1", location: "https://maps.app.goo.gl/gW9ERYpeG53p9ukj9" },
+  { name: "Saima Arabian Villas", location: "https://maps.app.goo.gl/qhecbiK1WcLBsuVC8" },
+  { name: "Naya Nazimabad", location: "https://maps.app.goo.gl/vwcgHWESvazHmNHp6" },
+];
+
+// Shown at the bottom of the Ready-to-Move list
+const READY_CONTACT =
   "Ready-to-Move Projects ki maloomat ke liye humari sales team se 0302-2285787 par rabta karein.";
 
 // ---------- MENUS ----------
@@ -163,6 +166,13 @@ function groupMenuText(group) {
   return lines.join("\n");
 }
 
+// Ready-to-Move list page
+function readyMenuText() {
+  const lines = READY_PROJECTS.map((p, i) => `[${i + 1}] ${p.name}`);
+  lines.push("[0] Main Menu");
+  return `Ready-to-Move Projects:\n\n${lines.join("\n")}\n\n${READY_CONTACT}`;
+}
+
 // Location / Price / Verified By menu. For a project inside a group, [0] goes back to the list.
 function projectMenuText(insideGroup) {
   return `[1] Location\n[2] Price\n[3] Verified By\n[0] ${insideGroup ? "Back" : "Main Menu"}`;
@@ -170,7 +180,7 @@ function projectMenuText(insideGroup) {
 
 // ---------- SESSIONS (in memory) ----------
 
-// phone -> { state: "main" | "group" | "project" | "subproject", project, sub, lastSeen }
+// phone -> { state: "main" | "group" | "project" | "subproject" | "ready", project, sub, lastSeen }
 const sessions = new Map();
 const SESSION_TIMEOUT = 24 * 60 * 60 * 1000; // after 24h of silence, welcome again
 const seenMessages = new Set(); // avoid handling WhatsApp webhook retries twice
@@ -242,8 +252,8 @@ async function handleMessage(from, text, name) {
       await send(from, WEBSITE);
     } else if (key === READY_KEY) {
       logLead("VIEWED READY-TO-MOVE", name, from);
-      await send(from, READY_TEXT);
-      await send(from, mainMenuText());
+      session.state = "ready";
+      await send(from, readyMenuText());
     } else if (PROJECTS[projectIndex]) {
       const chosen = PROJECTS[projectIndex];
       session.project = projectIndex;
@@ -258,6 +268,25 @@ async function handleMessage(from, text, name) {
     } else {
       await send(from, UNKNOWN_MSG);
       await send(from, mainMenuText());
+    }
+    return;
+  }
+
+  // ----- Ready-to-Move page -----
+  if (session.state === "ready") {
+    const n = /^\d+$/.test(input) ? Number(input) : -1;
+
+    if (input === "0") {
+      session.state = "main";
+      await send(from, mainMenuText());
+    } else if (n >= 1 && READY_PROJECTS[n - 1]) {
+      const p = READY_PROJECTS[n - 1];
+      logLead(`VIEWED LOCATION - Ready-to-Move / ${p.name}`, name, from);
+      await send(from, `${p.name}\nthe location is ${p.location}`);
+      await send(from, readyMenuText());
+    } else {
+      await send(from, UNKNOWN_MSG);
+      await send(from, readyMenuText());
     }
     return;
   }
