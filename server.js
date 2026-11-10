@@ -66,7 +66,7 @@ const PROJECTS = [
     location:
       "Location details coming soon. Please contact our sales team: 0302-2285787",
     verified:
-      "The project is verified by SBCA\nthe project is leased by LDA\nPlease contact our sales team for move details 0302-2285787",
+      "The project is verified by SBCA\nthe project is leased by LDA\nPlease contact our sales team for more details 0302-2285787",
     projects: [
       {
         name: "Bolan",
