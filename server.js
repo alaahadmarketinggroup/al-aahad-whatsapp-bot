@@ -107,6 +107,14 @@ const PROJECTS = [
       "Monthly Installments 30,000",
     verified: "the project is verified by SBCA\nthe project is leased by LDA",
   },
+    {
+    name: "Al Ghafoor Sky Rise",
+    location: "the location is https://maps.app.goo.gl/1BY53ScvHYLxLzP8A",
+    price:
+      "The price is 5,000,000 for 80 square yds\n" +
+      "Monthly Installments 25,000",
+    verified: "the project is verified by SBCA",
+  },
 ];
 
 // Fixed menu numbers for the two special options
