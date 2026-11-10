@@ -70,7 +70,7 @@ const PROJECTS = [
     projects: [
       {
         name: "Bolan",
-        price: planText("Bohan - 5 Year Payment Plan", [
+        price: planText("Bolan - 5 Year Payment Plan", [
           "80 sq yds: 3,500,000",
           "120 sq yds: 4,500,000",
         ]),
@@ -139,10 +139,10 @@ function projectIndexFromKey(n) {
 // The main menu is sent automatically right after this message.
 const READY_TEXT =
   "Ready-to-Move Projects:\n\n" +
-  "• Times Residency - https://maps.app.goo.gl/eErUbaND2B6XHqn58\n" +
-  "• North Town Residency Phase 1 - https://maps.app.goo.gl/gW9ERYpeG53p9ukj9\n" +
-  "• Saima Arabian Villas - https://maps.app.goo.gl/qhecbiK1WcLBsuVC8\n" +
-  "• Naya Nazimabad - https://maps.app.goo.gl/vwcgHWESvazHmNHp6\n" +
+  "• Times Residency - https://maps.app.goo.gl/eErUbaND2B6XHqn58\n\n" +
+  "• North Town Residency Phase 1 - https://maps.app.goo.gl/gW9ERYpeG53p9ukj9\n\n" +
+  "• Saima Arabian Villas - https://maps.app.goo.gl/qhecbiK1WcLBsuVC8\n\n" +
+  "• Naya Nazimabad - https://maps.app.goo.gl/vwcgHWESvazHmNHp6\n\n" +
   "Ready-to-Move Projects ki maloomat ke liye humari sales team se 0302-2285787 par rabta karein.";
 
 // ---------- MENUS ----------
