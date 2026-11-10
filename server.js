@@ -142,6 +142,7 @@ const READY_TEXT =
   "• Times Residency\n" +
   "• North Town Residency Phase 1\n" +
   "• Saima Arabian Villas\n\n" +
+  "• Naya Nazimabad\n\n" +
   "Ready-to-Move Projects ki maloomat ke liye humari sales team se 0302-2285787 par rabta karein.";
 
 // ---------- MENUS ----------
