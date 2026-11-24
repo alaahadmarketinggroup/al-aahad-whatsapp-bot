@@ -111,9 +111,9 @@ const PROJECTS = [
     name: "Al Ghafoor Sky Rise",
     location: "the location is https://maps.app.goo.gl/1BY53ScvHYLxLzP8A",
     price:
-      "The price is 5,000,000 for 80 square yds\n" +
-      "Monthly Installments 25,000",
-    verified: "the project is verified by SBCA",
+      "The booking starts from 600,000 \n" +
+      "Monthly Installments 75,000",
+    verified: "the project is verified and leased by KDA",
   },
 ];
 
